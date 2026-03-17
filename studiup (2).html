@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studiup — Платформа архитектурного обучения</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════ */
+:root {
+  --blue:#1A5CFF; --blue-d:#0F3FBF; --blue-l:#5B90FF;
+  --blue-pale:#E8EFFE; --blue-ultra:#F0F4FF;
+  --white:#fff; --ink:#0A1628; --ink2:#1E2D4A; --ink3:#4A6080; --ink4:#8EA5C0;
+  --line:#D8E4F0; --green:#00C8A0; --orange:#FF6B35; --yellow:#FFD600;
+  --sidebar-w:240px; --nav-h:64px;
+  --r:12px; --r2:20px; --r3:28px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--blue-ultra);color:var(--ink);overflow-x:hidden;min-height:100vh}
+
+/* ══════════════════════════════════════
+   TOP NAV
+══════════════════════════════════════ */
+#topNav {
+  position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem 0 0;
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo-area {
+  width:var(--sidebar-w);display:flex;align-items:center;gap:.75rem;
+  padding:0 1.5rem;border-right:1px solid var(--line);height:100%;flex-shrink:0;
+}
+.logo-box{width:34px;height:34px;background:var(--blue);border-radius:9px;
+  display:grid;place-items:center;flex-shrink:0}
+.logo-box svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2}
+.logo-txt{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;
+  color:var(--ink);cursor:pointer}
+.logo-txt span{color:var(--blue)}
+.nav-center{flex:1;padding:0 2rem;display:flex;align-items:center;gap:.5rem}
+.nav-search{flex:1;max-width:400px;position:relative}
+.nav-search input{width:100%;padding:.55rem 1rem .55rem 2.5rem;border:1.5px solid var(--line);
+  border-radius:50px;font-family:inherit;font-size:.875rem;color:var(--ink);
+  background:var(--blue-ultra);outline:none;transition:all .2s}
+.nav-search input:focus{border-color:var(--blue);background:#fff;
+  box-shadow:0 0 0 3px rgba(26,92,255,.08)}
+.nav-search::before{content:'🔍';position:absolute;left:.75rem;top:50%;
+  transform:translateY(-50%);font-size:.75rem;pointer-events:none}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-notif{width:36px;height:36px;border-radius:50%;background:var(--blue-ultra);
+  display:grid;place-items:center;cursor:pointer;position:relative;
+  border:1.5px solid var(--line);transition:all .2s;font-size:.9rem}
+.nav-notif:hover{border-color:var(--blue);background:var(--blue-pale)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;
+  background:var(--orange);border-radius:50%;border:1.5px solid #fff}
+.user-chip{display:flex;align-items:center;gap:.6rem;padding:.35rem .75rem .35rem .35rem;
+  border:1.5px solid var(--line);border-radius:50px;cursor:pointer;
+  transition:all .2s;background:var(--white)}
+.user-chip:hover{border-color:var(--blue)}
+.user-chip-av{width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue-l),var(--blue));
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:.75rem}
+.user-chip-name{font-size:.8rem;font-weight:600;color:var(--ink2)}
+.btn-login{padding:.45rem 1.25rem;border:1.5px solid var(--line);border-radius:50px;
+  background:transparent;color:var(--ink2);font-family:inherit;font-size:.875rem;
+  font-weight:500;cursor:pointer;transition:all .2s}
+.btn-login:hover{border-color:var(--blue);color:var(--blue)}
+.btn-signup{padding:.5rem 1.35rem;border:none;border-radius:50px;
+  background:var(--blue);color:#fff;font-family:inherit;font-size:.875rem;
+  font-weight:600;cursor:pointer;transition:all .25s}
+.btn-signup:hover{background:var(--blue-d);transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(26,92,255,.35)}
+
+/* ══════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════ */
+#sidebar {
+  position:fixed;top:var(--nav-h);left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--white);border-right:1px solid var(--line);
+  overflow-y:auto;z-index:200;padding:1.25rem .75rem;
+  display:flex;flex-direction:column;gap:.25rem;
+}
+.sb-section-label{font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ink4);font-weight:600;padding:.5rem .75rem;margin-top:.75rem}
+.sb-section-label:first-child{margin-top:0}
+.sb-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .75rem;
+  border-radius:var(--r);cursor:pointer;transition:all .2s;
+  color:var(--ink3);font-size:.875rem;font-weight:500;text-decoration:none;
+  position:relative}
+.sb-item:hover{background:var(--blue-ultra);color:var(--blue)}
+.sb-item.active{background:var(--blue-pale);color:var(--blue);font-weight:600}
+.sb-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;background:var(--blue);border-radius:0 3px 3px 0}
+.sb-icon{width:20px;text-align:center;font-size:1rem;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:.65rem;
+  font-weight:700;padding:.15rem .45rem;border-radius:10px;min-width:18px;text-align:center}
+.sb-badge-green{background:var(--green)}
+.sb-badge-orange{background:var(--orange)}
+
+/* ══════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════ */
+#mainContent{
+  margin-left:var(--sidebar-w);margin-top:var(--nav-h);
+  min-height:calc(100vh - var(--nav-h));padding:2rem 2.5rem;
+}
+
+/* ══════════════════════════════════════
+   PAGES
+══════════════════════════════════════ */
+.page{display:none}
+.page.active{display:block;animation:pageIn .25s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════
+   LANDING (no sidebar)
+══════════════════════════════════════ */
+body.landing #sidebar{display:none}
+body.landing #mainContent{margin-left:0;padding:0}
+body.landing #topNav .nav-logo-area{border-right:none;width:auto}
+
+/* ══════════════════════════════════════
+   SHARED UI
+══════════════════════════════════════ */
+.page-header{margin-bottom:2rem}
+.page-header h1{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;
+  letter-spacing:-.5px;margin-bottom:.35rem}
+.page-header p{font-size:.9rem;color:var(--ink3);font-weight:300}
+.card{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);padding:1.5rem}
+.card-sm{background:var(--white);border-radius:var(--r);border:1px solid var(--line);padding:1.1rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.flex-center{display:flex;align-items:center;gap:.75rem}
+.tag{display:inline-block;padding:.2rem .65rem;border-radius:6px;
+  font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.tag-blue{background:var(--blue-pale);color:var(--blue)}
+.tag-green{background:rgba(0,200,160,.12);color:var(--green)}
+.tag-orange{background:rgba(255,107,53,.12);color:var(--orange)}
+.tag-yellow{background:rgba(255,214,0,.15);color:#B8960A}
+.btn{padding:.55rem 1.25rem;border-radius:10px;font-family:inherit;font-size:.875rem;
+  font-weight:600;cursor:pointer;transition:all .2s;border:none;display:inline-flex;
+  align-items:center;gap:.4rem}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(26,92,255,.25)}
+.btn-blue:hover{background:var(--blue-d);transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(26,92,255,.35)}
+.btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-ultra)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-sm{padding:.4rem .9rem;font-size:.78rem;border-radius:8px}
+.stat-big{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--blue)}
+.stat-lbl{font-size:.78rem;color:var(--ink3);margin-top:.2rem}
+.progress-bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:.5rem}
+.progress-fill{height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--blue-l),var(--blue));transition:width .6s ease}
+.divider{height:1px;background:var(--line);margin:1.25rem 0}
+.empty-state{text-align:center;padding:3rem 1rem}
+.empty-icon{font-size:3rem;display:block;margin-bottom:.75rem}
+.empty-state h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:.5rem}
+.empty-state p{font-size:.85rem;color:var(--ink3)}
+.avatar{border-radius:50%;display:grid;place-items:center;font-weight:700;
+  background:linear-gradient(135deg,var(--blue-l),var(--blue));color:#fff;flex-shrink:0}
+
+/* ══════════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════════ */
+.lp-hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;padding:calc(var(--nav-h) + 3rem) 6% 3rem;
+  position:relative;overflow:hidden;background:var(--white)}
+.lp-grid-bg{position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--blue-pale) 1px,transparent 1px),
+  linear-gradient(90deg,var(--blue-pale) 1px,transparent 1px);
+  background-size:52px 52px;opacity:.4;
+  mask-image:linear-gradient(to right,transparent,black 30%,black 70%,transparent)}
+.lp-left{position:relative;z-index:2;animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.lp-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;
+  background:var(--blue-pale);border-radius:50px;font-size:.78rem;color:var(--blue);
+  font-weight:600;margin-bottom:1.75rem}
+.lp-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);
+  animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.lp-h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,4vw,3.8rem);
+  font-weight:800;line-height:1.08;letter-spacing:-1.5px;margin-bottom:1.5rem;
+  animation:fadeUp .7s .1s ease both}
+.lp-h1 em{font-style:normal;color:var(--blue)}
+.lp-p{font-size:1.05rem;color:var(--ink3);line-height:1.75;max-width:480px;
+  margin-bottom:2.25rem;font-weight:300;animation:fadeUp .7s .2s ease both}
+.lp-btns{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeUp .7s .25s ease both}
+.lp-btn-main{padding:.9rem 2rem;border-radius:14px;font-family:inherit;font-size:.95rem;
+  font-weight:700;cursor:pointer;transition:all .3s;border:none}
+.lp-btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 30px rgba(26,92,255,.3)}
+.lp-btn-primary:hover{background:var(--blue-d);transform:translateY(-2px);
+  box-shadow:0 12px 36px rgba(26,92,255,.45)}
+.lp-btn-out{background:transparent;border:1.5px solid var(--line)!important;color:var(--ink2)}
+.lp-btn-out:hover{border-color:var(--blue)!important;color:var(--blue);background:var(--blue-ultra)}
+.lp-metrics{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;
+  border-top:1px solid var(--line);animation:fadeUp .7s .3s ease both}
+.lp-metric span{display:block;font-family:'Syne',sans-serif;font-size:1.9rem;
+  font-weight:800;color:var(--blue)}
+.lp-metric small{font-size:.8rem;color:var(--ink3)}
+.lp-right{position:relative;height:100vh;overflow:hidden;background:var(--ink)}
+.lp-bg-lines{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(91,144,255,.1) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,144,255,.1) 1px,transparent 1px);background-size:40px 40px}
+.lp-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);
+  width:400px;height:400px;background:radial-gradient(circle,rgba(26,92,255,.3),transparent 70%)}
+.lp-float{position:absolute;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(16px);
+  border-radius:16px;padding:1.1rem 1.3rem;color:#fff;min-width:175px}
+.lp-f1{top:18%;left:10%;animation:fa 5s ease-in-out infinite}
+.lp-f2{top:44%;right:8%;animation:fb 6s ease-in-out infinite}
+.lp-f3{bottom:20%;left:18%;animation:fa 4s ease-in-out infinite 1s}
+@keyframes fa{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes fb{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+.lf-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;
+  color:rgba(255,255,255,.5);margin-bottom:.3rem}
+.lf-val{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800}
+.lf-sub{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem}
+.lf-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;
+  border-radius:20px;font-size:.68rem;font-weight:600;margin-top:.45rem}
+.lf-pill-g{background:rgba(0,200,160,.2);color:#00C8A0}
+.lf-pill-b{background:rgba(91,144,255,.2);color:#5B90FF}
+.lf-pill-o{background:rgba(255,107,53,.2);color:#FF8C60}
+/* 3D box */
+.box3d-wrap{position:absolute;inset:0;display:grid;place-items:center;perspective:800px}
+.box3d{transform-style:preserve-3d;animation:rot 20s linear infinite;width:140px;height:140px}
+@keyframes rot{0%{transform:rotateX(20deg) rotateY(0)}100%{transform:rotateX(20deg) rotateY(360deg)}}
+.bf{position:absolute;width:140px;height:140px;border:1.5px solid rgba(91,144,255,.4);
+  background:rgba(26,92,255,.04)}
+.bf-fr{transform:translateZ(70px)}.bf-bk{transform:translateZ(-70px) rotateY(180deg)}
+.bf-l{transform:translateX(-70px) rotateY(-90deg)}.bf-r{transform:translateX(70px) rotateY(90deg)}
+.bf-t{transform:translateY(-70px) rotateX(90deg)}.bf-bt{transform:translateY(70px) rotateX(-90deg)}
+/* ticker */
+.ticker-wrap{background:var(--blue);padding:.8rem 0;overflow:hidden}
+.ticker{display:flex;gap:3rem;animation:ticker 30s linear infinite;width:max-content}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{display:flex;align-items:center;gap:.6rem;color:rgba(255,255,255,.85);
+  font-size:.83rem;font-weight:500;white-space:nowrap}
+.ti-dot{color:rgba(255,255,255,.3)}
+/* lp sections */
+.lp-sec{padding:5rem 6%}
+.lp-sec-dark{background:var(--ink)}
+.lp-sec-blue{background:var(--blue-ultra)}
+.s-lbl{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:2px;color:var(--blue);font-weight:600;margin-bottom:.75rem}
+.s-lbl::before{content:'';width:18px;height:2px;background:var(--blue);border-radius:1px}
+.s-lbl-w{color:var(--blue-l)}.s-lbl-w::before{background:var(--blue-l)}
+.s-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:800;letter-spacing:-.8px;line-height:1.15;margin-bottom:1rem}
+.s-title-w{color:#fff}
+.s-desc{font-size:.95rem;color:var(--ink3);line-height:1.75;max-width:520px;font-weight:300}
+.s-desc-w{color:rgba(255,255,255,.55)}
+/* lp courses */
+.lp-courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem}
+.lcc{background:var(--white);border-radius:var(--r2);overflow:hidden;
+  border:1px solid var(--line);cursor:pointer;transition:all .3s}
+.lcc:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(26,92,255,.1);
+  border-color:rgba(26,92,255,.3)}
+.lcc-thumb{height:140px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden}
+.lcc-lines{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(91,144,255,.12) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,144,255,.12) 1px,transparent 1px);background-size:28px 28px}
+.lcc-icon{position:relative;z-index:1;font-size:2.6rem;
+  filter:drop-shadow(0 4px 20px rgba(26,92,255,.4))}
+.lcc-bdg{position:absolute;top:.75rem;right:.75rem;color:#fff;font-size:.62rem;
+  font-weight:700;padding:.2rem .6rem;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+.lcc-body{padding:1.25rem}
+.lcc-tag{display:inline-block;padding:.18rem .6rem;background:var(--blue-pale);color:var(--blue);
+  font-size:.68rem;font-weight:600;border-radius:5px;margin-bottom:.6rem;
+  text-transform:uppercase;letter-spacing:.4px}
+.lcc-body h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;margin-bottom:.4rem}
+.lcc-body p{font-size:.8rem;color:var(--ink3);line-height:1.55;margin-bottom:.9rem}
+.lcc-meta{display:flex;gap:.9rem;font-size:.75rem;color:var(--ink4);margin-bottom:.9rem}
+.lcc-footer{display:flex;justify-content:space-between;align-items:center;
+  padding-top:.9rem;border-top:1px solid var(--line)}
+.lcc-price{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue)}
+/* lp why */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.why-vis{position:relative;height:460px}
+.why-big{position:absolute;top:0;left:0;right:0;background:var(--ink);
+  border-radius:var(--r2);padding:1.75rem;color:#fff;height:265px;overflow:hidden}
+.why-big::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(91,144,255,.07) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,144,255,.07) 1px,transparent 1px);background-size:30px 30px}
+.why-big-h{position:relative;font-family:'Syne',sans-serif;font-size:.9rem;
+  font-weight:800;margin-bottom:1rem}
+.bars{position:relative;display:flex;flex-direction:column;gap:.55rem}
+.bar-row{display:flex;align-items:center;gap:.7rem}
+.bar-lbl{font-size:.72rem;color:rgba(255,255,255,.5);width:85px;flex-shrink:0}
+.bar-trk{flex:1;height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--blue-l),var(--blue));animation:barG 1.4s ease both}
+@keyframes barG{from{width:0!important}}
+.bar-pct{font-size:.72rem;color:rgba(255,255,255,.5);width:30px;text-align:right}
+.why-smalls{position:absolute;bottom:0;left:0;right:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.wsc{background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:1.1rem;transition:all .3s;cursor:pointer}
+.wsc:hover{border-color:var(--blue);transform:translateY(-3px)}
+.wsc-i{width:38px;height:38px;background:var(--blue-pale);border-radius:9px;
+  display:grid;place-items:center;font-size:1rem;margin-bottom:.65rem}
+.wsc h4{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:800;margin-bottom:.25rem}
+.wsc p{font-size:.75rem;color:var(--ink3);line-height:1.5}
+.why-pts{margin-top:2rem;display:flex;flex-direction:column;gap:1rem}
+.wp{display:flex;gap:.9rem;padding:1.1rem;border-radius:var(--r);
+  border:1px solid var(--line);transition:all .3s;cursor:pointer}
+.wp:hover{border-color:var(--blue);background:var(--blue-ultra)}
+.wp-n{width:34px;height:34px;background:var(--blue);color:#fff;border-radius:9px;
+  display:grid;place-items:center;font-family:'Syne',sans-serif;
+  font-size:.82rem;font-weight:800;flex-shrink:0}
+.wp h4{font-family:'Syne',sans-serif;font-size:.875rem;font-weight:800;margin-bottom:.25rem}
+.wp p{font-size:.8rem;color:var(--ink3);line-height:1.5}
+/* lp reviews */
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:1.1rem;margin-top:2.25rem}
+.rev-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--r2);padding:1.6rem;transition:all .3s}
+.rev-card:hover{background:rgba(26,92,255,.08);border-color:rgba(26,92,255,.3);transform:translateY(-4px)}
+.rev-stars{color:var(--yellow);font-size:.82rem;margin-bottom:.9rem;letter-spacing:2px}
+.rev-text{font-size:.86rem;color:rgba(255,255,255,.6);line-height:1.7;
+  margin-bottom:1.1rem;font-weight:300}
+.rev-foot{display:flex;align-items:center;gap:.7rem}
+.rev-av{width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-l));
+  display:grid;place-items:center;font-size:.9rem;flex-shrink:0}
+.rev-name{font-size:.83rem;font-weight:600;color:#fff}
+.rev-info{font-size:.7rem;color:rgba(255,255,255,.4)}
+.rev-result{margin-left:auto;text-align:right}
+.rev-result-n{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue-l)}
+.rev-result small{display:block;font-size:.65rem;color:rgba(255,255,255,.35)}
+/* lp cta */
+.lp-cta{padding:4.5rem 6%;background:var(--blue);position:relative;overflow:hidden;text-align:center}
+.lp-cta::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:50px 50px}
+.lp-cta h2{position:relative;font-family:'Syne',sans-serif;
+  font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:800;color:#fff;
+  letter-spacing:-1px;margin-bottom:1rem}
+.lp-cta p{position:relative;color:rgba(255,255,255,.7);margin-bottom:2rem;font-weight:300}
+.lp-cta-btns{position:relative;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-cta-w{padding:.85rem 2rem;background:#fff;color:var(--blue);border:none;
+  border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .25s}
+.btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.btn-cta-g{padding:.85rem 2rem;background:transparent;color:#fff;
+  border:1.5px solid rgba(255,255,255,.35);border-radius:12px;
+  font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s}
+.btn-cta-g:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+/* lp footer */
+.lp-footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.06);padding:3.5rem 6% 2rem}
+.lp-foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem}
+.lf-brand .logo-txt{font-size:1.3rem;display:block;margin-bottom:.75rem}
+.lf-brand p{font-size:.82rem;color:rgba(255,255,255,.4);line-height:1.7;max-width:240px;font-weight:300}
+.lf-social{display:flex;gap:.5rem;margin-top:1rem}
+.lf-soc{width:34px;height:34px;background:rgba(255,255,255,.06);border-radius:8px;
+  display:grid;place-items:center;cursor:pointer;transition:all .2s;
+  border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.5);
+  font-size:.75rem;text-decoration:none}
+.lf-soc:hover{background:var(--blue);border-color:var(--blue)}
+.lf-col h4{font-family:'Syne',sans-serif;font-size:.7rem;text-transform:uppercase;
+  letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:1rem}
+.lf-col ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.lf-col a{color:rgba(255,255,255,.45);text-decoration:none;font-size:.82rem;
+  font-weight:300;transition:color .2s;cursor:pointer}
+.lf-col a:hover{color:var(--blue-l)}
+.lf-bot{padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;justify-content:space-between;font-size:.78rem;
+  color:rgba(255,255,255,.28);flex-wrap:wrap;gap:.5rem}
+
+/* ══════════════════════════════════════
+   CABINET (DASHBOARD)
+══════════════════════════════════════ */
+.dash-welcome{background:linear-gradient(135deg,var(--blue),var(--blue-d));
+  border-radius:var(--r2);padding:1.75rem 2rem;color:#fff;margin-bottom:1.5rem;
+  position:relative;overflow:hidden}
+.dash-welcome::before{content:'';position:absolute;right:-30px;top:-30px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,.06);pointer-events:none}
+.dash-welcome::after{content:'';position:absolute;right:60px;bottom:-40px;
+  width:150px;height:150px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none}
+.dw-hi{font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:.35rem}
+.dw-name{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;
+  letter-spacing:-.5px;margin-bottom:.5rem;position:relative}
+.dw-sub{font-size:.875rem;color:rgba(255,255,255,.7);font-weight:300;position:relative}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.ds-card{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.25rem;transition:all .2s}
+.ds-card:hover{border-color:rgba(26,92,255,.3);transform:translateY(-2px)}
+.ds-icon{width:40px;height:40px;border-radius:10px;background:var(--blue-pale);
+  display:grid;place-items:center;font-size:1.1rem;margin-bottom:.75rem}
+.ds-num{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--blue)}
+.ds-lbl{font-size:.75rem;color:var(--ink3);margin-top:.15rem}
+.dash-body{display:grid;grid-template-columns:1fr 340px;gap:1.5rem}
+.my-courses-list{display:flex;flex-direction:column;gap:.75rem}
+.mc-item{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.25rem;display:flex;align-items:center;gap:1rem;
+  transition:all .2s;cursor:pointer}
+.mc-item:hover{border-color:rgba(26,92,255,.3);transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(26,92,255,.08)}
+.mc-thumb{width:56px;height:42px;border-radius:9px;display:grid;place-items:center;
+  font-size:1.4rem;flex-shrink:0;overflow:hidden;position:relative}
+.mc-info{flex:1}
+.mc-name{font-size:.875rem;font-weight:600;margin-bottom:.4rem}
+.mc-bar{display:flex;align-items:center;gap:.6rem}
+.mc-bar-track{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.mc-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue-l),var(--blue))}
+.mc-pct{font-size:.73rem;color:var(--ink3);white-space:nowrap}
+.mc-actions{display:flex;gap:.5rem;flex-shrink:0}
+.dash-right{display:flex;flex-direction:column;gap:1.25rem}
+.quick-links{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ql-btn{background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:1rem;text-align:center;cursor:pointer;transition:all .2s}
+.ql-btn:hover{border-color:var(--blue);background:var(--blue-ultra);transform:translateY(-2px)}
+.ql-icon{font-size:1.5rem;display:block;margin-bottom:.4rem}
+.ql-label{font-size:.78rem;font-weight:600;color:var(--ink2)}
+.activity-feed{display:flex;flex-direction:column;gap:.5rem}
+.act-item{display:flex;align-items:center;gap:.75rem;padding:.65rem 0;
+  border-bottom:1px solid var(--line)}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:32px;height:32px;border-radius:9px;background:var(--blue-pale);
+  display:grid;place-items:center;font-size:.85rem;flex-shrink:0}
+.act-text{font-size:.8rem;color:var(--ink2);flex:1}
+.act-time{font-size:.7rem;color:var(--ink4);white-space:nowrap}
+
+/* ══════════════════════════════════════
+   COURSES PAGE
+══════════════════════════════════════ */
+.courses-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.75rem}
+.cf-btn{padding:.4rem 1rem;border:1.5px solid var(--line);border-radius:50px;
+  background:var(--white);font-family:inherit;font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:all .2s;color:var(--ink3)}
+.cf-btn:hover{border-color:var(--blue);color:var(--blue)}
+.cf-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ══════════════════════════════════════
+   COURSE DETAIL
+══════════════════════════════════════ */
+.cd-hero{background:var(--ink);border-radius:var(--r2);padding:2rem;
+  display:grid;grid-template-columns:1fr 300px;gap:2rem;
+  margin-bottom:1.5rem;position:relative;overflow:hidden}
+.cd-hero::before{content:'';position:absolute;inset:0;background-image:
+  linear-gradient(rgba(91,144,255,.07) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,144,255,.07) 1px,transparent 1px);background-size:36px 36px}
+.cd-hero-l{position:relative;z-index:1}
+.cd-bc{font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:.75rem;cursor:pointer}
+.cd-bc span{color:var(--blue-l);cursor:pointer}
+.cd-bc span:hover{text-decoration:underline}
+.cd-hero h1{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;
+  letter-spacing:-.5px;color:#fff;margin-bottom:.75rem}
+.cd-hero p{font-size:.875rem;color:rgba(255,255,255,.6);line-height:1.7;
+  font-weight:300;margin-bottom:1.25rem}
+.cd-meta{display:flex;gap:1.25rem;flex-wrap:wrap}
+.cd-meta-i{font-size:.8rem;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:.35rem}
+.cd-hero-r{position:relative;z-index:1}
+.cd-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r2);padding:1.5rem;backdrop-filter:blur(10px)}
+.cd-price{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;margin-bottom:.25rem}
+.cd-price-sub{font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:1.25rem}
+.btn-buy-full{width:100%;padding:.9rem;background:var(--blue);color:#fff;border:none;
+  border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .25s;margin-bottom:.6rem;
+  box-shadow:0 6px 20px rgba(26,92,255,.4)}
+.btn-buy-full:hover{background:var(--blue-d);transform:translateY(-1px)}
+.btn-try{width:100%;padding:.7rem;background:transparent;color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.2);border-radius:12px;
+  font-family:inherit;font-size:.875rem;font-weight:500;cursor:pointer;transition:all .25s}
+.btn-try:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.05)}
+.cd-inc{margin-top:1.25rem}
+.cd-inc h4{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:1px}
+.cd-inc-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.cd-inc-list li{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:rgba(255,255,255,.65)}
+.cd-inc-list li::before{content:'✓';width:18px;height:18px;background:rgba(26,92,255,.3);
+  border-radius:50%;display:grid;place-items:center;color:var(--blue-l);font-size:.6rem;flex-shrink:0}
+.cd-body{display:grid;grid-template-columns:1fr 280px;gap:1.5rem}
+.cd-tab-bar{display:flex;gap:.25rem;background:var(--blue-ultra);
+  border-radius:12px;padding:.3rem;margin-bottom:1.5rem}
+.cd-tab{flex:1;padding:.5rem;border:none;border-radius:9px;background:transparent;
+  font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;
+  color:var(--ink3);transition:all .2s}
+.cd-tab.active{background:#fff;color:var(--blue);box-shadow:0 2px 8px rgba(26,92,255,.1)}
+.cd-tab-content{display:none}
+.cd-tab-content.active{display:block}
+.prog-item{display:flex;align-items:center;gap:.9rem;padding:.8rem .9rem;
+  border:1px solid var(--line);border-radius:var(--r);cursor:pointer;
+  transition:all .2s;margin-bottom:.5rem;background:var(--white)}
+.prog-item:hover{border-color:var(--blue);background:var(--blue-ultra)}
+.prog-n{width:26px;height:26px;background:var(--blue-pale);color:var(--blue);
+  border-radius:7px;display:grid;place-items:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.prog-name{font-size:.85rem;font-weight:500;flex:1}
+.prog-dur{font-size:.72rem;color:var(--ink4)}
+.cd-sidebar-card{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.25rem;margin-bottom:1rem}
+.cd-sidebar-card h4{font-family:'Syne',sans-serif;font-size:.875rem;font-weight:800;margin-bottom:1rem}
+
+/* ══════════════════════════════════════
+   SCHEDULE
+══════════════════════════════════════ */
+.schedule-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.week-nav{display:flex;align-items:center;gap:.75rem}
+.week-btn{width:32px;height:32px;border-radius:50%;background:var(--white);
+  border:1.5px solid var(--line);cursor:pointer;display:grid;place-items:center;
+  font-size:.8rem;transition:all .2s}
+.week-btn:hover{border-color:var(--blue);color:var(--blue)}
+.week-label{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700}
+.cal-grid{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);overflow:hidden}
+.cal-head{display:grid;grid-template-columns:80px repeat(7,1fr);background:var(--blue-ultra)}
+.cal-head-cell{padding:.75rem;text-align:center;font-size:.75rem;font-weight:700;
+  color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;border-right:1px solid var(--line)}
+.cal-head-cell.today-col{background:var(--blue-pale);color:var(--blue)}
+.cal-body{display:grid;grid-template-columns:80px repeat(7,1fr)}
+.cal-time{padding:.8rem .75rem;font-size:.72rem;color:var(--ink4);border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:center}
+.cal-cell{padding:.35rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  min-height:60px}
+.cal-cell.today-col{background:rgba(26,92,255,.02)}
+.cal-event{border-radius:7px;padding:.4rem .6rem;font-size:.72rem;cursor:pointer;
+  transition:all .2s;margin-bottom:.25rem}
+.cal-event:hover{filter:brightness(.95);transform:scale(1.02)}
+.ce-blue{background:var(--blue-pale);color:var(--blue);border-left:3px solid var(--blue)}
+.ce-green{background:rgba(0,200,160,.1);color:var(--green);border-left:3px solid var(--green)}
+.ce-orange{background:rgba(255,107,53,.1);color:var(--orange);border-left:3px solid var(--orange)}
+.ce-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ce-time{opacity:.7;font-size:.68rem;margin-top:.1rem}
+.upcoming-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem}
+.upc-item{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;
+  transition:all .2s;cursor:pointer}
+.upc-item:hover{border-color:rgba(26,92,255,.3);transform:translateX(4px)}
+.upc-date{text-align:center;min-width:48px;flex-shrink:0}
+.upc-date .ud-d{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue);line-height:1}
+.upc-date .ud-m{font-size:.65rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px}
+.upc-divider{width:1px;height:40px;background:var(--line);flex-shrink:0}
+.upc-info{flex:1}
+.upc-name{font-size:.875rem;font-weight:600;margin-bottom:.25rem}
+.upc-meta{font-size:.75rem;color:var(--ink3)}
+.upc-join{flex-shrink:0}
+
+/* ══════════════════════════════════════
+   LESSONS
+══════════════════════════════════════ */
+.lessons-layout{display:grid;grid-template-columns:300px 1fr;gap:1.5rem}
+.lessons-list{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);overflow:hidden}
+.ll-course-header{padding:1.1rem 1.25rem;background:var(--ink);color:#fff;
+  font-family:'Syne',sans-serif;font-size:.875rem;font-weight:800;
+  display:flex;align-items:center;gap:.6rem}
+.ll-item{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;
+  border-bottom:1px solid var(--line);cursor:pointer;transition:all .2s}
+.ll-item:hover{background:var(--blue-ultra)}
+.ll-item.active{background:var(--blue-pale);border-left:3px solid var(--blue)}
+.ll-item:last-child{border-bottom:none}
+.ll-num{width:28px;height:28px;border-radius:8px;background:var(--blue-pale);
+  color:var(--blue);display:grid;place-items:center;font-size:.72rem;
+  font-weight:700;flex-shrink:0}
+.ll-item.done .ll-num{background:rgba(0,200,160,.12);color:var(--green)}
+.ll-item.active .ll-num{background:var(--blue);color:#fff}
+.ll-name{font-size:.82rem;font-weight:500;flex:1}
+.ll-dur{font-size:.7rem;color:var(--ink4)}
+.ll-done-icon{font-size:.8rem;color:var(--green)}
+.lesson-player{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);overflow:hidden}
+.lp-video{background:var(--ink);aspect-ratio:16/9;display:flex;align-items:center;
+  justify-content:center;position:relative;overflow:hidden}
+.lp-video-bg{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(91,144,255,.07) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,144,255,.07) 1px,transparent 1px);background-size:36px 36px}
+.lp-play-btn{position:relative;z-index:1;width:70px;height:70px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
+  display:grid;place-items:center;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px)}
+.lp-play-btn:hover{background:var(--blue);border-color:var(--blue);transform:scale(1.1)}
+.lp-play-icon{font-size:1.5rem;margin-left:3px}
+.lp-progress{padding:1rem 1.5rem;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:1rem}
+.lp-prog-bar{flex:1;height:6px;background:var(--line);border-radius:3px;
+  overflow:hidden;cursor:pointer}
+.lp-prog-fill{height:100%;background:linear-gradient(90deg,var(--blue-l),var(--blue));
+  border-radius:3px;width:35%;transition:width .3s}
+.lp-time{font-size:.78rem;color:var(--ink3);white-space:nowrap}
+.lp-controls{display:flex;gap:.5rem}
+.lp-ctrl-btn{padding:.35rem .8rem;border:1.5px solid var(--line);border-radius:8px;
+  background:transparent;font-family:inherit;font-size:.75rem;font-weight:600;
+  cursor:pointer;color:var(--ink3);transition:all .2s}
+.lp-ctrl-btn:hover{border-color:var(--blue);color:var(--blue)}
+.lesson-body{padding:1.5rem}
+.lesson-body h2{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;
+  letter-spacing:-.3px;margin-bottom:.5rem}
+.lesson-body > p{font-size:.875rem;color:var(--ink3);line-height:1.7;margin-bottom:1.5rem;font-weight:300}
+.lesson-notes{background:var(--blue-ultra);border-radius:var(--r);padding:1.1rem;
+  border-left:3px solid var(--blue);margin-bottom:1.25rem}
+.lesson-notes h4{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:800;
+  color:var(--blue);margin-bottom:.5rem}
+.lesson-notes ul{padding-left:1.25rem;display:flex;flex-direction:column;gap:.3rem}
+.lesson-notes li{font-size:.82rem;color:var(--ink2);line-height:1.5}
+.lesson-nav{display:flex;gap:.75rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+
+/* ══════════════════════════════════════
+   MATERIALS
+══════════════════════════════════════ */
+.mat-filters{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.mat-card{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.25rem;cursor:pointer;transition:all .3s}
+.mat-card:hover{border-color:rgba(26,92,255,.3);transform:translateY(-4px);
+  box-shadow:0 10px 30px rgba(26,92,255,.09)}
+.mat-icon-wrap{width:52px;height:52px;border-radius:var(--r);background:var(--blue-pale);
+  display:grid;place-items:center;font-size:1.5rem;margin-bottom:1rem}
+.mat-card h4{font-family:'Syne',sans-serif;font-size:.875rem;font-weight:800;margin-bottom:.3rem}
+.mat-card p{font-size:.78rem;color:var(--ink3);line-height:1.5;margin-bottom:.9rem}
+.mat-meta{display:flex;justify-content:space-between;align-items:center}
+.mat-size{font-size:.72rem;color:var(--ink4)}
+.mat-download{padding:.3rem .75rem;background:var(--blue-pale);color:var(--blue);
+  border:none;border-radius:7px;font-family:inherit;font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .2s}
+.mat-download:hover{background:var(--blue);color:#fff}
+.mat-featured{background:linear-gradient(135deg,var(--blue),var(--blue-d));
+  color:#fff;border-color:transparent}
+.mat-featured h4,.mat-featured p{color:rgba(255,255,255,.9)}
+.mat-featured p{color:rgba(255,255,255,.65)}
+.mat-featured .mat-icon-wrap{background:rgba(255,255,255,.15)}
+.mat-featured .mat-size{color:rgba(255,255,255,.5)}
+.mat-featured .mat-download{background:rgba(255,255,255,.2);color:#fff}
+.mat-featured .mat-download:hover{background:rgba(255,255,255,.35)}
+
+/* ══════════════════════════════════════
+   CHECKOUT
+══════════════════════════════════════ */
+.checkout-layout{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start}
+.co-step{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.5rem;margin-bottom:1rem}
+.co-step-head{display:flex;align-items:center;gap:.875rem;margin-bottom:1.25rem}
+.co-step-n{width:30px;height:30px;border-radius:50%;background:var(--blue);
+  color:#fff;display:grid;place-items:center;font-family:'Syne',sans-serif;
+  font-size:.8rem;font-weight:800;flex-shrink:0}
+.co-step-n.done{background:var(--green)}
+.co-step-head h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.78rem;font-weight:600;
+  color:var(--ink2);margin-bottom:.4rem}
+.form-input{width:100%;padding:.7rem .95rem;border:1.5px solid var(--line);
+  border-radius:10px;font-family:inherit;font-size:.875rem;color:var(--ink);
+  background:var(--white);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,92,255,.08)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.pay-opts{display:flex;flex-direction:column;gap:.6rem}
+.pay-opt{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;
+  border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:all .2s}
+.pay-opt:hover{border-color:var(--blue)}
+.pay-opt.sel{border-color:var(--blue);background:var(--blue-ultra)}
+.pay-icon{font-size:1.4rem;flex-shrink:0}
+.pay-name{font-weight:600;font-size:.85rem}
+.pay-sub{font-size:.72rem;color:var(--ink3)}
+.co-summary{background:var(--white);border-radius:var(--r2);border:1px solid var(--line);
+  padding:1.5rem;position:sticky;top:calc(var(--nav-h) + 1rem)}
+.cos-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:1.25rem}
+.cos-course{display:flex;gap:.9rem;margin-bottom:1.25rem;align-items:center}
+.cos-img{width:60px;height:44px;border-radius:9px;flex-shrink:0;
+  display:grid;place-items:center;font-size:1.4rem;overflow:hidden;position:relative}
+.cos-name{font-size:.83rem;font-weight:600;margin-bottom:.2rem}
+.cos-sub{font-size:.72rem;color:var(--ink3)}
+.cos-lines{padding-top:1rem;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem}
+.cos-line{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink3)}
+.cos-total{display:flex;justify-content:space-between;padding-top:.75rem;
+  border-top:1px solid var(--line);font-family:'Syne',sans-serif;font-size:1rem;font-weight:800}
+.btn-pay{width:100%;padding:.9rem;background:var(--blue);color:#fff;border:none;
+  border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .25s;margin-top:1.1rem;
+  box-shadow:0 6px 20px rgba(26,92,255,.3)}
+.btn-pay:hover{background:var(--blue-d);transform:translateY(-1px);
+  box-shadow:0 10px 28px rgba(26,92,255,.4)}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:.35rem;
+  font-size:.72rem;color:var(--ink4);margin-top:.65rem}
+.form-err{font-size:.75rem;color:#E53E3E;margin-top:.25rem;display:none}
+.form-err.show{display:block}
+
+/* ══════════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(10,22,40,.65);
+  backdrop-filter:blur(8px);z-index:999;display:none;place-items:center;padding:1rem}
+.overlay.open{display:grid;animation:ovIn .2s ease}
+@keyframes ovIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:#fff;border-radius:var(--r3);width:100%;max-width:420px;
+  padding:2.25rem;position:relative;animation:modalUp .3s ease}
+@keyframes modalUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:1.1rem;right:1.1rem;width:30px;height:30px;
+  background:var(--blue-ultra);border:none;border-radius:50%;cursor:pointer;
+  font-size:.9rem;color:var(--ink3);transition:all .2s;display:grid;place-items:center}
+.modal-close:hover{background:var(--blue);color:#fff}
+.modal-box h2{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;
+  letter-spacing:-.4px;margin-bottom:.4rem}
+.modal-sub{font-size:.83rem;color:var(--ink3);margin-bottom:1.5rem;line-height:1.5}
+.modal-tabs{display:flex;gap:.35rem;margin-bottom:1.5rem;
+  background:var(--blue-ultra);border-radius:10px;padding:.25rem}
+.mt-btn{flex:1;padding:.45rem;border:none;border-radius:8px;background:transparent;
+  font-family:inherit;font-size:.83rem;font-weight:600;cursor:pointer;
+  color:var(--ink3);transition:all .2s}
+.mt-btn.active{background:#fff;color:var(--blue);box-shadow:0 2px 8px rgba(26,92,255,.12)}
+.btn-form{width:100%;padding:.85rem;background:var(--blue);color:#fff;border:none;
+  border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:all .25s;margin-top:.35rem}
+.btn-form:hover{background:var(--blue-d);transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(26,92,255,.28)}
+.btn-demo{width:100%;padding:.75rem;background:var(--blue-ultra);color:var(--blue);
+  border:none;border-radius:10px;font-family:inherit;font-size:.875rem;font-weight:600;
+  cursor:pointer;transition:all .2s;margin-top:.5rem}
+.btn-demo:hover{background:var(--blue-pale)}
+.or-divider{text-align:center;font-size:.78rem;color:var(--ink4);
+  margin:.65rem 0;position:relative}
+.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;
+  width:37%;height:1px;background:var(--line)}
+.or-divider::before{left:0}.or-divider::after{right:0}
+
+/* ══════════════════════════════════════
+   SUCCESS
+══════════════════════════════════════ */
+.success-wrap{display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - var(--nav-h));padding:2rem}
+.success-box{background:var(--white);border-radius:var(--r3);padding:3rem;
+  max-width:480px;width:100%;text-align:center;
+  box-shadow:0 20px 60px rgba(26,92,255,.1);border:1px solid var(--line)}
+.succ-anim{font-size:4rem;display:block;margin-bottom:1.5rem;animation:boun .6s ease}
+@keyframes boun{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.success-box h2{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;
+  letter-spacing:-.5px;margin-bottom:.75rem}
+.success-box p{color:var(--ink3);font-size:.9rem;line-height:1.7;margin-bottom:2rem}
+.succ-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:1100px){
+  .dash-body{grid-template-columns:1fr}.dash-right{grid-template-columns:1fr 1fr;display:grid}
+  .cd-hero{grid-template-columns:1fr}.cd-hero-r{display:none}
+  .cd-body{grid-template-columns:1fr}
+  .lessons-layout{grid-template-columns:1fr}.lessons-list{display:none}
+}
+@media(max-width:900px){
+  :root{--sidebar-w:0px}
+  #sidebar{transform:translateX(-100%)}
+  #mainContent{margin-left:0;padding:1.25rem}
+  .dash-stats{grid-template-columns:1fr 1fr}
+  .checkout-layout{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  .lp-foot-grid{grid-template-columns:1fr 1fr}
+  .lp-hero{grid-template-columns:1fr}.lp-right{display:none}
+}
+@media(max-width:600px){
+  .grid-4{grid-template-columns:1fr 1fr}
+  .lp-foot-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body class="landing">
+
+<!-- ══════════════════════════════════════
+     TOP NAV
+══════════════════════════════════════ -->
+<nav id="topNav">
+  <div class="nav-logo-area">
+    <div class="logo-box">
+      <svg viewBox="0 0 18 18"><polygon points="9,2 16,6 16,14 9,18 2,14 2,6"/><line x1="9" y1="2" x2="9" y2="18"/><line x1="2" y1="6" x2="16" y2="14"/><line x1="16" y1="6" x2="2" y2="14"/></svg>
+    </div>
+    <span class="logo-txt" onclick="goHome()">Studi<span>up</span></span>
+  </div>
+  <div class="nav-center" id="navCenter">
+    <!-- shown when logged in -->
+  </div>
+  <div class="nav-right" id="navRight">
+    <button class="btn-login" onclick="openAuth('login')">Войти</button>
+    <button class="btn-signup" onclick="openAuth('register')">Начать бесплатно →</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<div id="sidebar">
+  <div class="sb-section-label">Главное</div>
+  <div class="sb-item active" onclick="goPage('cabinet')" data-page="cabinet">
+    <span class="sb-icon">🏠</span> Кабинет
+  </div>
+  <div class="sb-item" onclick="goPage('courses')" data-page="courses">
+    <span class="sb-icon">📚</span> Все курсы
+  </div>
+
+  <div class="sb-section-label">Обучение</div>
+  <div class="sb-item" onclick="goPage('schedule')" data-page="schedule">
+    <span class="sb-icon">📅</span> Расписание
+    <span class="sb-badge sb-badge-orange">3</span>
+  </div>
+  <div class="sb-item" onclick="goPage('lessons')" data-page="lessons">
+    <span class="sb-icon">🎬</span> Занятия
+  </div>
+  <div class="sb-item" onclick="goPage('materials')" data-page="materials">
+    <span class="sb-icon">📁</span> Доп. материалы
+    <span class="sb-badge sb-badge-green">12</span>
+  </div>
+
+  <div class="sb-section-label">Прочее</div>
+  <div class="sb-item" onclick="goPage('checkout')" data-page="checkout" id="sbCheckout" style="display:none">
+    <span class="sb-icon">💳</span> Оплата
+  </div>
+  <div class="sb-item" onclick="logout()">
+    <span class="sb-icon">🚪</span> Выйти
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div id="mainContent">
+
+  <!-- ─── LANDING ─── -->
+  <div class="page active" id="page-landing">
+    <!-- HERO -->
+    <section class="lp-hero">
+      <div class="lp-grid-bg"></div>
+      <div class="lp-left">
+        <div class="lp-badge">🏛 Профессиональное архитектурное образование</div>
+        <h1 class="lp-h1">Проектируй.<br><em>Строй</em> карьеру.<br>Будь архитектором.</h1>
+        <p class="lp-p">Практические курсы по AutoCAD, 3ds Max, SketchUp, Revit и ArchiCAD. От нуля до уверенного специалиста за 3–6 месяцев.</p>
+        <div class="lp-btns">
+          <button class="lp-btn-main lp-btn-primary" onclick="goPage('courses')">Выбрать курс →</button>
+          <button class="lp-btn-main lp-btn-out" onclick="openAuth('register')">▶&nbsp;Попробовать бесплатно</button>
+        </div>
+        <div class="lp-metrics">
+          <div class="lp-metric"><span>4 200+</span><small>студентов</small></div>
+          <div class="lp-metric"><span>12</span><small>курсов</small></div>
+          <div class="lp-metric"><span>96%</span><small>трудоустройство</small></div>
+        </div>
+      </div>
+      <div class="lp-right">
+        <div class="lp-bg-lines"></div>
+        <div class="lp-glow"></div>
+        <div class="box3d-wrap">
+          <div class="box3d">
+            <div class="bf bf-fr"></div><div class="bf bf-bk"></div>
+            <div class="bf bf-l"></div><div class="bf bf-r"></div>
+            <div class="bf bf-t"></div><div class="bf bf-bt"></div>
+          </div>
+        </div>
+        <div class="lp-float lp-f1">
+          <div class="lf-lbl">Текущий курс</div>
+          <div class="lf-val">AutoCAD 2D/3D</div>
+          <div class="lf-sub">Урок 7 из 24</div>
+          <div class="lf-pill lf-pill-b">▶ В процессе</div>
+        </div>
+        <div class="lp-float lp-f2">
+          <div class="lf-lbl">Прогресс недели</div>
+          <div class="lf-val">+34 балла</div>
+          <div class="lf-sub">Топ 12%</div>
+          <div class="lf-pill lf-pill-g">↑ Растёт</div>
+        </div>
+        <div class="lp-float lp-f3">
+          <div class="lf-lbl">Ближайший эфир</div>
+          <div class="lf-val">Revit · Семейства</div>
+          <div class="lf-sub">Завтра, 19:00</div>
+          <div class="lf-pill lf-pill-o">🔴 Скоро</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="ti">📐 AutoCAD</span><span class="ti-dot">·</span>
+        <span class="ti">🧊 3ds Max</span><span class="ti-dot">·</span>
+        <span class="ti">🏠 SketchUp</span><span class="ti-dot">·</span>
+        <span class="ti">🏗 Revit</span><span class="ti-dot">·</span>
+        <span class="ti">📦 ArchiCAD</span><span class="ti-dot">·</span>
+        <span class="ti">🦏 Rhino 3D</span><span class="ti-dot">·</span>
+        <span class="ti">✨ V-Ray</span><span class="ti-dot">·</span>
+        <span class="ti">🌅 Lumion</span><span class="ti-dot">·</span>
+        <span class="ti">📐 AutoCAD</span><span class="ti-dot">·</span>
+        <span class="ti">🧊 3ds Max</span><span class="ti-dot">·</span>
+        <span class="ti">🏠 SketchUp</span><span class="ti-dot">·</span>
+        <span class="ti">🏗 Revit</span><span class="ti-dot">·</span>
+        <span class="ti">📦 ArchiCAD</span><span class="ti-dot">·</span>
+        <span class="ti">🦏 Rhino 3D</span><span class="ti-dot">·</span>
+        <span class="ti">✨ V-Ray</span><span class="ti-dot">·</span>
+        <span class="ti">🌅 Lumion</span><span class="ti-dot">·</span>
+      </div>
+    </div>
+
+    <!-- COURSES PREVIEW -->
+    <section class="lp-sec lp-sec-blue">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div class="s-lbl">Программы обучения</div>
+          <h2 class="s-title">Курсы для архитекторов<br>и дизайнеров</h2>
+        </div>
+        <button class="btn btn-ghost" onclick="goPage('courses')">Все курсы →</button>
+      </div>
+      <div class="lp-courses-grid" id="lpCoursesGrid"></div>
+    </section>
+
+    <!-- WHY -->
+    <section class="lp-sec">
+      <div class="why-grid">
+        <div class="why-vis">
+          <div class="why-big">
+            <div class="why-big-h">📊 Рейтинг навыков студентов</div>
+            <div class="bars">
+              <div class="bar-row"><span class="bar-lbl">AutoCAD</span><div class="bar-trk"><div class="bar-fill" style="width:92%"></div></div><span class="bar-pct">92%</span></div>
+              <div class="bar-row"><span class="bar-lbl">3ds Max</span><div class="bar-trk"><div class="bar-fill" style="width:85%"></div></div><span class="bar-pct">85%</span></div>
+              <div class="bar-row"><span class="bar-lbl">SketchUp</span><div class="bar-trk"><div class="bar-fill" style="width:78%"></div></div><span class="bar-pct">78%</span></div>
+              <div class="bar-row"><span class="bar-lbl">Revit BIM</span><div class="bar-trk"><div class="bar-fill" style="width:70%"></div></div><span class="bar-pct">70%</span></div>
+            </div>
+          </div>
+          <div class="why-smalls">
+            <div class="wsc"><div class="wsc-i">🏆</div><h4>Реальные проекты</h4><p>Портфолио из 5+ работ</p></div>
+            <div class="wsc"><div class="wsc-i">💼</div><h4>Трудоустройство</h4><p>Помогаем найти работу</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="s-lbl">Почему Studiup</div>
+          <h2 class="s-title">Образование,<br>которое работает</h2>
+          <p class="s-desc">Готовим профессионалов под запросы реального рынка.</p>
+          <div class="why-pts">
+            <div class="wp"><div class="wp-n">01</div><div><h4>Практика с первого урока</h4><p>Реальные задачи из архитектурной практики.</p></div></div>
+            <div class="wp"><div class="wp-n">02</div><div><h4>Преподаватели-практики</h4><p>Действующие архитекторы с реальными проектами.</p></div></div>
+            <div class="wp"><div class="wp-n">03</div><div><h4>Сопровождение до результата</h4><p>Куратор и проверка домашних работ.</p></div></div>
+            <div class="wp"><div class="wp-n">04</div><div><h4>Гибкий формат</h4><p>Учись когда и где удобно.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="lp-sec lp-sec-dark">
+      <div class="s-lbl s-lbl-w">Отзывы</div>
+      <h2 class="s-title s-title-w">Студенты о Studiup</h2>
+      <p class="s-desc s-desc-w">Реальные результаты реальных людей.</p>
+      <div class="rev-grid">
+        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-text">«После курса AutoCAD устроился чертёжником в проектное бюро уже через месяц после окончания!»</p><div class="rev-foot"><div class="rev-av">А</div><div><div class="rev-name">Асхат Т.</div><div class="rev-info">AutoCAD · Алматы</div></div><div class="rev-result"><div class="rev-result-n">💼 Работает</div><small>в проектном бюро</small></div></div></div>
+        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-text">«Курс 3ds Max изменил мою жизнь. Зарабатываю в 3 раза больше на фрилансе!»</p><div class="rev-foot"><div class="rev-av">М</div><div><div class="rev-name">Мадина К.</div><div class="rev-info">3ds Max · Астана</div></div><div class="rev-result"><div class="rev-result-n">×3 доход</div><small>после курса</small></div></div></div>
+        <div class="rev-card"><div class="rev-stars">★★★★★</div><p class="rev-text">«Изучил Revit за 2 месяца. Куратор всегда на связи. Рекомендую всем архитекторам.»</p><div class="rev-foot"><div class="rev-av">Е</div><div><div class="rev-name">Ержан Б.</div><div class="rev-info">Revit BIM · Шымкент</div></div><div class="rev-result"><div class="rev-result-n">BIM-спец</div><small>за 2 месяца</small></div></div></div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="lp-cta">
+      <h2>Начни строить карьеру<br>уже сегодня 🏛</h2>
+      <p>Первый урок любого курса — бесплатно. Без карты, без обязательств.</p>
+      <div class="lp-cta-btns">
+        <button class="btn-cta-w" onclick="openAuth('register')">Попробовать бесплатно →</button>
+        <button class="btn-cta-g" onclick="goPage('courses')">Смотреть все курсы</button>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="lp-footer">
+      <div class="lp-foot-grid">
+        <div class="lf-brand">
+          <span class="logo-txt" style="color:#fff">Studi<span style="color:var(--blue-l)">up</span></span>
+          <p>Онлайн-школа архитектурного проектирования. AutoCAD, 3ds Max, SketchUp, Revit и другие инструменты.</p>
+          <div class="lf-social">
+            <a class="lf-soc" href="#">T</a><a class="lf-soc" href="#">in</a>
+            <a class="lf-soc" href="#">yt</a><a class="lf-soc" href="#">ig</a>
+          </div>
+        </div>
+        <div class="lf-col"><h4>Курсы</h4><ul>
+          <li><a onclick="openCourse('autocad')">AutoCAD</a></li>
+          <li><a onclick="openCourse('3dsmax')">3ds Max</a></li>
+          <li><a onclick="openCourse('sketchup')">SketchUp</a></li>
+          <li><a onclick="openCourse('revit')">Revit BIM</a></li>
+          <li><a onclick="openCourse('archicad')">ArchiCAD</a></li>
+        </ul></div>
+        <div class="lf-col"><h4>Компания</h4><ul>
+          <li><a href="#">О нас</a></li>
+          <li><a href="#">Преподаватели</a></li>
+          <li><a href="#">Блог</a></li>
+          <li><a href="#">Вакансии</a></li>
+        </ul></div>
+        <div class="lf-col"><h4>Поддержка</h4><ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Политика</a></li>
+          <li><a href="#">Оферта</a></li>
+          <li><a href="#">Помощь</a></li>
+        </ul></div>
+      </div>
+      <div class="lf-bot">
+        <span>© 2025 Studiup. Все права защищены.</span>
+        <span>Сделано для будущих архитекторов Центральной Азии 🏛</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ─── КАБИНЕТ ─── -->
+  <div class="page" id="page-cabinet">
+    <div class="dash-welcome">
+      <div class="dw-hi">Добро пожаловать обратно 👋</div>
+      <div class="dw-name" id="dwName">Загрузка...</div>
+      <div class="dw-sub">Продолжай с того места, где остановился.</div>
+    </div>
+    <div class="dash-stats" id="dashStats">
+      <div class="ds-card"><div class="ds-icon">📚</div><div class="ds-num" id="dsStat1">0</div><div class="ds-lbl">Курсов куплено</div></div>
+      <div class="ds-card"><div class="ds-icon">✅</div><div class="ds-num">12</div><div class="ds-lbl">Уроков пройдено</div></div>
+      <div class="ds-card"><div class="ds-icon">⏱</div><div class="ds-num">8.5 ч</div><div class="ds-lbl">Время обучения</div></div>
+      <div class="ds-card"><div class="ds-icon">🏆</div><div class="ds-num">0</div><div class="ds-lbl">Сертификатов</div></div>
+    </div>
+    <div class="dash-body">
+      <div>
+        <div class="card">
+          <div class="flex-between" style="margin-bottom:1.25rem">
+            <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800">Мои курсы</h3>
+            <button class="btn btn-blue btn-sm" onclick="goPage('courses')">+ Добавить курс</button>
+          </div>
+          <div id="myCoursesList"></div>
+        </div>
+        <div class="card" style="margin-top:1.25rem">
+          <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:1.1rem">Ближайшие занятия</h3>
+          <div id="upcomingLessons"></div>
+        </div>
+      </div>
+      <div class="dash-right">
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;margin-bottom:1rem">Быстрый доступ</h3>
+          <div class="quick-links">
+            <div class="ql-btn" onclick="goPage('schedule')"><span class="ql-icon">📅</span><div class="ql-label">Расписание</div></div>
+            <div class="ql-btn" onclick="goPage('lessons')"><span class="ql-icon">🎬</span><div class="ql-label">Занятия</div></div>
+            <div class="ql-btn" onclick="goPage('materials')"><span class="ql-icon">📁</span><div class="ql-label">Материалы</div></div>
+            <div class="ql-btn" onclick="goPage('courses')"><span class="ql-icon">📚</span><div class="ql-label">Все курсы</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;margin-bottom:1rem">Активность</h3>
+          <div class="activity-feed" id="activityFeed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ВСЕ КУРСЫ ─── -->
+  <div class="page" id="page-courses">
+    <div class="page-header">
+      <h1>Все курсы</h1>
+      <p>Выбери программу и начни свой путь в архитектуре</p>
+    </div>
+    <div class="courses-filters">
+      <button class="cf-btn active" onclick="filterC('all',this)">Все курсы</button>
+      <button class="cf-btn" onclick="filterC('beginner',this)">С нуля</button>
+      <button class="cf-btn" onclick="filterC('mid',this)">Средний</button>
+      <button class="cf-btn" onclick="filterC('advanced',this)">Продвинутый</button>
+    </div>
+    <div class="grid-auto" id="allCoursesGrid"></div>
+  </div>
+
+  <!-- ─── ДЕТАЛИ КУРСА ─── -->
+  <div class="page" id="page-courseDetail">
+    <div id="courseDetailContent"></div>
+  </div>
+
+  <!-- ─── РАСПИСАНИЕ ─── -->
+  <div class="page" id="page-schedule">
+    <div class="page-header flex-between" style="margin-bottom:1.5rem">
+      <div>
+        <h1>Расписание</h1>
+        <p>Твои занятия и вебинары на неделю</p>
+      </div>
+      <div class="week-nav">
+        <button class="week-btn" onclick="changeWeek(-1)">‹</button>
+        <span class="week-label" id="weekLabel">17–23 марта 2025</span>
+        <button class="week-btn" onclick="changeWeek(1)">›</button>
+      </div>
+    </div>
+    <!-- Calendar -->
+    <div class="cal-grid">
+      <div class="cal-head">
+        <div class="cal-head-cell">Время</div>
+        <div class="cal-head-cell">Пн</div>
+        <div class="cal-head-cell today-col">Вт</div>
+        <div class="cal-head-cell">Ср</div>
+        <div class="cal-head-cell">Чт</div>
+        <div class="cal-head-cell">Пт</div>
+        <div class="cal-head-cell">Сб</div>
+        <div class="cal-head-cell">Вс</div>
+      </div>
+      <div class="cal-body" id="calBody"></div>
+    </div>
+    <!-- Upcoming -->
+    <div style="margin-top:2rem">
+      <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:1rem">Ближайшие события</h3>
+      <div class="upcoming-list" id="upcomingList"></div>
+    </div>
+  </div>
+
+  <!-- ─── ЗАНЯТИЯ ─── -->
+  <div class="page" id="page-lessons">
+    <div class="page-header">
+      <h1>Занятия</h1>
+      <p>Видеоуроки твоих курсов</p>
+    </div>
+    <div class="lessons-layout">
+      <div class="lessons-list" id="lessonsList"></div>
+      <div class="lesson-player" id="lessonPlayer"></div>
+    </div>
+  </div>
+
+  <!-- ─── МАТЕРИАЛЫ ─── -->
+  <div class="page" id="page-materials">
+    <div class="page-header">
+      <h1>Дополнительные материалы</h1>
+      <p>Файлы, шаблоны, чертежи и учебные ресурсы</p>
+    </div>
+    <div class="mat-filters">
+      <button class="cf-btn active" onclick="filterMat('all',this)">Все</button>
+      <button class="cf-btn" onclick="filterMat('template',this)">Шаблоны</button>
+      <button class="cf-btn" onclick="filterMat('guide',this)">Руководства</button>
+      <button class="cf-btn" onclick="filterMat('project',this)">Проекты</button>
+      <button class="cf-btn" onclick="filterMat('video',this)">Видео</button>
+    </div>
+    <div class="mat-grid" id="matGrid"></div>
+  </div>
+
+  <!-- ─── ОПЛАТА ─── -->
+  <div class="page" id="page-checkout">
+    <div class="page-header">
+      <h1>Оформление заказа</h1>
+      <p id="checkoutSubtitle">Выбери курс для оплаты</p>
+    </div>
+    <div class="checkout-layout">
+      <div>
+        <div class="co-step">
+          <div class="co-step-head">
+            <div class="co-step-n done">✓</div>
+            <h3>Личные данные</h3>
+          </div>
+          <div id="coUserInfo"></div>
+        </div>
+        <div class="co-step">
+          <div class="co-step-head">
+            <div class="co-step-n">2</div>
+            <h3>Способ оплаты</h3>
+          </div>
+          <div class="pay-opts">
+            <div class="pay-opt sel" onclick="selPay(this)">
+              <input type="radio" name="pay" checked>
+              <span class="pay-icon">💳</span>
+              <div><div class="pay-name">Банковская карта</div><div class="pay-sub">Visa, Mastercard, Мир</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" name="pay">
+              <span class="pay-icon">📱</span>
+              <div><div class="pay-name">Kaspi Pay</div><div class="pay-sub">Быстрая оплата через Kaspi</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" name="pay">
+              <span class="pay-icon">🏦</span>
+              <div><div class="pay-name">Рассрочка</div><div class="pay-sub">До 12 месяцев без %</div></div>
+            </div>
+          </div>
+          <div style="margin-top:1rem">
+            <div class="form-group">
+              <label>Номер карты</label>
+              <input class="form-input" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmtCard(this)">
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Срок</label><input class="form-input" placeholder="ММ/ГГ" maxlength="5" oninput="fmtExp(this)"></div>
+              <div class="form-group"><label>CVV</label><input class="form-input" type="password" placeholder="•••" maxlength="3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="co-summary">
+        <div class="cos-title">Ваш заказ</div>
+        <div class="cos-course" id="cosCourse"></div>
+        <div class="cos-lines">
+          <div class="cos-line"><span>Стоимость</span><span id="cosPrice">—</span></div>
+          <div class="cos-line"><span>Скидка 10%</span><span style="color:var(--green)" id="cosDiscount">—</span></div>
+        </div>
+        <div class="cos-total"><span>Итого</span><span id="cosTotal" style="color:var(--blue)">—</span></div>
+        <button class="btn-pay" onclick="doPay()">Оплатить →</button>
+        <div class="secure-note">🔒 SSL-шифрование · Безопасная оплата</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── УСПЕХ ─── -->
+  <div class="page" id="page-success">
+    <div class="success-wrap">
+      <div class="success-box">
+        <span class="succ-anim">🎉</span>
+        <h2>Курс оплачен!</h2>
+        <p>Поздравляем! Доступ к курсу открыт в твоём личном кабинете. Можешь начать обучение прямо сейчас.</p>
+        <div class="succ-btns">
+          <button class="btn btn-blue" onclick="goPage('lessons')">Перейти к занятиям →</button>
+          <button class="btn btn-ghost" onclick="goPage('cabinet')">В кабинет</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mainContent -->
+
+<!-- ── AUTH MODAL ── -->
+<div class="overlay" id="authOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div id="authContent"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   DATA
+══════════════════════════════════════ */
+const COURSES = [
+  {id:'autocad',icon:'📐',bg:'background:linear-gradient(135deg,#0A1628,#1A2E50)',name:'AutoCAD для архитекторов',short:'Чертежи, 2D/3D документация, блоки и слои.',tag:'С нуля',level:'beginner',hours:48,lessons:64,price:15000,badge:'Хит',badgeBg:'background:var(--orange)',
+    program:['Интерфейс AutoCAD','Базовые инструменты','2D чертежи','Слои и стили','Блоки и атрибуты','3D моделирование','Печать','Финальный проект']},
+  {id:'3dsmax',icon:'🧊',bg:'background:linear-gradient(135deg,#0D2544,#1A4A8A)',name:'3ds Max + V-Ray рендеринг',short:'3D интерьеры и экстерьеры, фотореалистичный рендеринг.',tag:'Средний',level:'mid',hours:56,lessons:72,price:18000,badge:'Популярный',badgeBg:'background:var(--blue)',
+    program:['Введение в 3ds Max','Полигональное моделирование','Материалы и текстуры','Освещение','V-Ray настройка','Рендеринг интерьера','Постобработка','Финальный проект']},
+  {id:'sketchup',icon:'🏠',bg:'background:linear-gradient(135deg,#0A2840,#1A5C80)',name:'SketchUp Pro + Lumion',short:'Концептуальное моделирование зданий, визуализация.',tag:'С нуля',level:'beginner',hours:36,lessons:48,price:12000,badge:'Новый',badgeBg:'background:var(--green)',
+    program:['Основы SketchUp','Моделирование','Компоненты','Сцены','Экспорт','Lumion окружение','Визуализация','Презентация']},
+  {id:'revit',icon:'🏗',bg:'background:linear-gradient(135deg,#1A0A28,#3A1A5C)',name:'Revit Architecture BIM',short:'Информационное моделирование зданий BIM.',tag:'Продвинутый',level:'advanced',hours:60,lessons:80,price:22000,badge:'BIM',badgeBg:'background:#7B2DBF',
+    program:['BIM концепция','Стены и перекрытия','Двери и окна','Лестницы','Семейства Revit','Спецификации','Чертежи из модели','Совместная работа','Финальная модель']},
+  {id:'archicad',icon:'📦',bg:'background:linear-gradient(135deg,#001A28,#00406A)',name:'ArchiCAD полный курс',short:'Проектирование жилых и общественных зданий.',tag:'Средний',level:'mid',hours:44,lessons:58,price:16000,badge:'',badgeBg:'',
+    program:['Интерфейс ArchiCAD','Стены','Кровли','Библиотеки','Документация','2D инструменты','Визуализация','Публикация']},
+  {id:'rhino',icon:'🦏',bg:'background:linear-gradient(135deg,#08141E,#102030)',name:'Rhino 3D + Grasshopper',short:'Параметрическое и генеративное проектирование.',tag:'Продвинутый',level:'advanced',hours:52,lessons:68,price:20000,badge:'Новый',badgeBg:'background:var(--green)',
+    program:['NURBS моделирование','Поверхности','Solid','Grasshopper','Параметрика','Генеративный дизайн','Fabrication','Финальный проект']},
+];
+
+const MATERIALS = [
+  {id:1,type:'template',icon:'📐',name:'Шаблоны AutoCAD 2024',desc:'Набор готовых шаблонов листов A1-A4 со штампами.',size:'12.4 МБ',featured:false},
+  {id:2,type:'guide',icon:'📖',name:'Руководство по 3ds Max',desc:'PDF-гайд: горячие клавиши и основные приёмы.',size:'8.2 МБ',featured:false},
+  {id:3,type:'project',icon:'🏠',name:'Проект жилого дома',desc:'Полный чертёж 3-этажного жилого дома AutoCAD.',size:'34.7 МБ',featured:true},
+  {id:4,type:'video',icon:'🎥',name:'Бонус: V-Ray освещение',desc:'Дополнительный видеоурок по настройке студийного света.',size:'1.2 ГБ',featured:false},
+  {id:5,type:'template',icon:'📋',name:'Шаблоны Revit 2024',desc:'Стартовые шаблоны BIM-проектов с нужными настройками.',size:'22.1 МБ',featured:false},
+  {id:6,type:'guide',icon:'📝',name:'Чеклист сдачи проекта',desc:'Список всех требований к архитектурной документации.',size:'1.1 МБ',featured:false},
+  {id:7,type:'project',icon:'🏗',name:'BIM-модель офисного центра',desc:'Учебная Revit-модель многоэтажного офисного здания.',size:'89.3 МБ',featured:false},
+  {id:8,type:'video',icon:'🎬',name:'Мастер-класс: рендер в Lumion',desc:'Запись открытого вебинара по Lumion от Алины Мирзаевой.',size:'2.8 ГБ',featured:false},
+  {id:9,type:'template',icon:'🎨',name:'Palettes для SketchUp',desc:'Коллекция готовых цветовых палитр и материалов.',size:'5.6 МБ',featured:false},
+  {id:10,type:'guide',icon:'📚',name:'Словарь BIM-терминов',desc:'150+ терминов BIM на русском, казахском и английском.',size:'2.3 МБ',featured:false},
+  {id:11,type:'project',icon:'🏛',name:'Паттерн-библиотека Grasshopper',desc:'50+ параметрических паттернов для фасадов.',size:'4.7 МБ',featured:false},
+  {id:12,type:'video',icon:'📹',name:'Запись: AutoCAD для начинающих',desc:'Полная запись первого вебинара курса AutoCAD.',size:'3.1 ГБ',featured:false},
+];
+
+const SCHEDULE_EVENTS = [
+  {day:1,time:'10:00',dur:90,name:'AutoCAD · Урок 8',type:'blue'},
+  {day:2,time:'19:00',dur:60,name:'Живой эфир: 3ds Max',type:'orange'},
+  {day:3,time:'14:00',dur:90,name:'SketchUp · Урок 5',type:'blue'},
+  {day:4,time:'10:00',dur:90,name:'Revit BIM · Урок 12',type:'green'},
+  {day:4,time:'19:00',dur:60,name:'Вебинар: Семейства',type:'orange'},
+  {day:5,time:'16:00',dur:60,name:'AutoCAD · Консультация',type:'blue'},
+  {day:6,time:'11:00',dur:120,name:'Мастер-класс: V-Ray',type:'orange'},
+];
+
+const LESSONS_DATA = [
+  {num:1,name:'Знакомство с AutoCAD',dur:'32 мин',done:true},
+  {num:2,name:'Интерфейс и настройка',dur:'28 мин',done:true},
+  {num:3,name:'Базовые примитивы',dur:'45 мин',done:true},
+  {num:4,name:'Слои и свойства',dur:'38 мин',done:true},
+  {num:5,name:'Инструменты редактирования',dur:'52 мин',done:true},
+  {num:6,name:'Аннотации и размеры',dur:'41 мин',done:false,active:true},
+  {num:7,name:'Блоки и атрибуты',dur:'49 мин',done:false},
+  {num:8,name:'3D основы',dur:'55 мин',done:false},
+  {num:9,name:'3D твёрдые тела',dur:'48 мин',done:false},
+  {num:10,name:'Печать и листы',dur:'35 мин',done:false},
+];
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let S = {
+  user: null,
+  currentCourse: null,
+  purchased: [],
+  activePage: 'landing',
+  weekOffset: 0,
+  activeLesson: 5,
+  matFilter: 'all',
+  courseFilter: 'all',
+};
+
+/* ══════════════════════════════════════
+   ROUTER
+══════════════════════════════════════ */
+function goPage(name) {
+  // if not logged in and trying to access protected pages
+  const protected_ = ['cabinet','schedule','lessons','materials','checkout'];
+  if(protected_.includes(name) && !S.user) { openAuth('login','Войди чтобы продолжить'); return; }
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  S.activePage = name;
+  window.scrollTo(0,0);
+
+  // sidebar active
+  document.querySelectorAll('.sb-item[data-page]').forEach(i=>i.classList.remove('active'));
+  const sbItem = document.querySelector(`.sb-item[data-page="${name}"]`);
+  if(sbItem) sbItem.classList.add('active');
+
+  // body class
+  const isLanding = name === 'landing';
+  document.body.classList.toggle('landing', isLanding || !S.user);
+
+  if(name==='landing') renderLandingCourses();
+  if(name==='courses') renderAllCourses();
+  if(name==='cabinet') renderCabinet();
+  if(name==='schedule') renderSchedule();
+  if(name==='lessons') renderLessons();
+  if(name==='materials') renderMaterials();
+  if(name==='checkout') renderCheckout();
+}
+
+function goHome() {
+  if(S.user) goPage('cabinet');
+  else goPage('landing');
+}
+
+/* ══════════════════════════════════════
+   RENDER COURSES
+══════════════════════════════════════ */
+function courseCardHTML(c) {
+  const owned = S.purchased.find(x=>x.id===c.id);
+  return `<div class="lcc" onclick="openCourse('${c.id}')">
+    <div class="lcc-thumb" style="${c.bg}">
+      <div class="lcc-lines"></div>
+      <div class="lcc-icon">${c.icon}</div>
+      ${c.badge?`<div class="lcc-bdg" style="${c.badgeBg}">${c.badge}</div>`:''}
+    </div>
+    <div class="lcc-body">
+      <div class="lcc-tag">${c.tag}</div>
+      <h3>${c.name}</h3>
+      <p>${c.short}</p>
+      <div class="lcc-meta">
+        <span>⏱ ${c.hours} ч</span>
+        <span>📹 ${c.lessons} ур.</span>
+        <span>🎓 Серт.</span>
+      </div>
+      <div class="lcc-footer">
+        <div class="lcc-price" style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--blue)">
+          ${owned ? '<span style="color:var(--green)">✓ Куплен</span>' : c.price.toLocaleString('ru')+' ₸'}
+        </div>
+        <button class="btn ${owned?'btn-green':'btn-blue'} btn-sm" onclick="event.stopPropagation();openCourse('${c.id}')">
+          ${owned ? '▶ Учиться' : 'Подробнее'}
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderLandingCourses() {
+  const el = document.getElementById('lpCoursesGrid');
+  if(el) el.innerHTML = COURSES.slice(0,6).map(courseCardHTML).join('');
+}
+
+let _courseFilter = 'all';
+function filterC(f, btn) {
+  _courseFilter = f;
+  document.querySelectorAll('.cf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAllCourses();
+}
+function renderAllCourses() {
+  const filtered = _courseFilter==='all'?COURSES:COURSES.filter(c=>c.level===_courseFilter);
+  document.getElementById('allCoursesGrid').innerHTML = filtered.map(courseCardHTML).join('');
+}
+
+/* ══════════════════════════════════════
+   COURSE DETAIL
+══════════════════════════════════════ */
+function openCourse(id) {
+  const c = COURSES.find(x=>x.id===id);
+  if(!c){return;}
+  S.currentCourse = c;
+  const owned = S.purchased.find(x=>x.id===id);
+  const prog = c.program.map((p,i)=>`
+    <div class="prog-item">
+      <div class="prog-n">${i+1}</div>
+      <span class="prog-name">${p}</span>
+      <span class="prog-dur">45 мин</span>
+    </div>`).join('');
+  document.getElementById('courseDetailContent').innerHTML = `
+    <div class="cd-hero">
+      <div class="cd-hero-l">
+        <div class="cd-bc"><span onclick="history.back()">← Назад</span> / ${c.name}</div>
+        <h1>${c.name}</h1>
+        <p>${c.short} Практический курс от опытного преподавателя с реальными проектами.</p>
+        <div class="cd-meta">
+          <span class="cd-meta-i">⏱ ${c.hours} часов</span>
+          <span class="cd-meta-i">📹 ${c.lessons} уроков</span>
+          <span class="cd-meta-i">👤 Куратор</span>
+          <span class="cd-meta-i">🎓 Сертификат</span>
+        </div>
+      </div>
+      <div class="cd-hero-r">
+        <div class="cd-card">
+          <div class="cd-price">${c.price.toLocaleString('ru')} ₸</div>
+          <div class="cd-price-sub">или ${Math.round(c.price/5).toLocaleString('ru')} ₸/мес · 5 месяцев</div>
+          ${owned
+            ? `<button class="btn-buy-full" style="background:var(--green)" onclick="goPage('lessons')">▶ Продолжить обучение</button>`
+            : `<button class="btn-buy-full" onclick="initCheckout('${c.id}')">Купить курс →</button>
+               <button class="btn-try" onclick="openAuth('register')">Попробовать бесплатно</button>`}
+          <div class="cd-inc">
+            <h4>Включено</h4>
+            <ul class="cd-inc-list">
+              <li>${c.hours} часов видео</li>
+              <li>Практические задания</li>
+              <li>Куратор на курсе</li>
+              <li>Доступ навсегда</li>
+              <li>Сертификат</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cd-body">
+      <div>
+        <div class="cd-tab-bar">
+          <button class="cd-tab active" onclick="switchTab(this,'prog')">Программа</button>
+          <button class="cd-tab" onclick="switchTab(this,'about')">О курсе</button>
+          <button class="cd-tab" onclick="switchTab(this,'teacher')">Преподаватель</button>
+        </div>
+        <div class="cd-tab-content active" id="tab-prog">
+          <div>${prog}</div>
+        </div>
+        <div class="cd-tab-content" id="tab-about">
+          <div class="card" style="margin-bottom:1rem">
+            <h4 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.75rem">Для кого этот курс</h4>
+            <div style="display:flex;flex-direction:column;gap:.75rem">
+              <div class="wp"><div class="wp-n">✓</div><div><h4>Начинающие</h4><p>Хочешь освоить инструменты с нуля</p></div></div>
+              <div class="wp"><div class="wp-n">✓</div><div><h4>Студенты вузов</h4><p>Параллельно с учёбой расширить навыки</p></div></div>
+              <div class="wp"><div class="wp-n">✓</div><div><h4>Практикующие</h4><p>Освоить новый инструмент</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="cd-tab-content" id="tab-teacher">
+          <div class="card">
+            <div class="flex-center" style="gap:1rem;margin-bottom:1rem">
+              <div class="avatar" style="width:60px;height:60px;font-size:1.5rem">👨‍💻</div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-weight:800">Азамат Нуртаев</div>
+                <div style="font-size:.8rem;color:var(--ink3)">Архитектор · 10 лет опыта · Алматы</div>
+                <div style="font-size:.8rem;color:var(--yellow);margin-top:.25rem">★★★★★ 4.9 · 1200+ студентов</div>
+              </div>
+            </div>
+            <p style="font-size:.85rem;color:var(--ink3);line-height:1.7">Действующий архитектор с портфолио более 38 реализованных объектов. Специализируется на жилых и общественных зданиях.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cd-sidebar-card">
+          <h4>📊 Курс включает</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem">
+            <li style="font-size:.82rem;color:var(--ink3)">🎥 ${c.lessons} видеоуроков</li>
+            <li style="font-size:.82rem;color:var(--ink3)">⏱ ${c.hours} часов контента</li>
+            <li style="font-size:.82rem;color:var(--ink3)">📁 Исходные файлы</li>
+            <li style="font-size:.82rem;color:var(--ink3)">✍️ Проверка работ</li>
+            <li style="font-size:.82rem;color:var(--ink3)">💬 Чат с куратором</li>
+            <li style="font-size:.82rem;color:var(--ink3)">♾️ Бессрочный доступ</li>
+          </ul>
+        </div>
+        <div class="cd-sidebar-card">
+          <h4>🎯 Уровень</h4>
+          <span class="tag tag-blue">${c.tag}</span>
+        </div>
+      </div>
+    </div>`;
+  goPage('courseDetail');
+}
+
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.cd-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.cd-tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tabId).classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   CABINET
+══════════════════════════════════════ */
+function renderCabinet() {
+  if(!S.user) return;
+  document.getElementById('dwName').textContent = 'Привет, ' + S.user.name + '! 👋';
+  document.getElementById('dsStat1').textContent = S.purchased.length;
+
+  const mcl = document.getElementById('myCoursesList');
+  if(S.purchased.length === 0) {
+    mcl.innerHTML = `<div class="empty-state"><span class="empty-icon">📚</span><h3>Курсов пока нет</h3><p>Купи первый курс и начни обучение</p><button class="btn btn-blue" style="margin-top:1rem" onclick="goPage('courses')">Выбрать курс</button></div>`;
+  } else {
+    mcl.innerHTML = S.purchased.map(c=>`
+      <div class="mc-item" onclick="openCourse('${c.id}')">
+        <div class="mc-thumb" style="${c.bg}"><span style="position:relative;z-index:1">${c.icon}</span></div>
+        <div class="mc-info">
+          <div class="mc-name">${c.name}</div>
+          <div class="mc-bar">
+            <div class="mc-bar-track"><div class="mc-bar-fill" style="width:${c.progress||0}%"></div></div>
+            <span class="mc-pct">${c.progress||0}%</span>
+          </div>
+        </div>
+        <div class="mc-actions">
+          <button class="btn btn-blue btn-sm" onclick="event.stopPropagation();goPage('lessons')">▶ Продолжить</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // upcoming lessons in cabinet
+  const ul = document.getElementById('upcomingLessons');
+  ul.innerHTML = SCHEDULE_EVENTS.slice(0,3).map(e=>`
+    <div style="display:flex;align-items:center;gap:.9rem;padding:.75rem 0;border-bottom:1px solid var(--line)">
+      <div class="act-icon">${e.type==='orange'?'🔴':e.type==='green'?'✅':'📐'}</div>
+      <div style="flex:1"><div style="font-size:.83rem;font-weight:600">${e.name}</div><div style="font-size:.73rem;color:var(--ink3)">${e.time} · ${e.dur} мин</div></div>
+      <button class="btn btn-blue btn-sm" onclick="goPage('schedule')">Открыть</button>
+    </div>`).join('');
+
+  // activity
+  document.getElementById('activityFeed').innerHTML = [
+    {icon:'🎓',text:'Вы зарегистрировались',time:'Сегодня'},
+    {icon:'✅',text:'Урок 5 пройден',time:'1 ч назад'},
+    {icon:'💬',text:'Вопрос куратору отправлен',time:'3 ч назад'},
+    {icon:'📥',text:'Материалы скачаны',time:'Вчера'},
+  ].map(a=>`
+    <div class="act-item">
+      <div class="act-icon">${a.icon}</div>
+      <div class="act-text">${a.text}</div>
+      <div class="act-time">${a.time}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   SCHEDULE
+══════════════════════════════════════ */
+const TIMES = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
+const DAYS_RU = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+let _weekOff = 0;
+
+function renderSchedule() {
+  updateWeekLabel();
+  const body = document.getElementById('calBody');
+  body.innerHTML = '';
+  TIMES.forEach((t,ti)=>{
+    const timeCell = document.createElement('div');
+    timeCell.className = 'cal-time';
+    timeCell.textContent = t;
+    body.appendChild(timeCell);
+    for(let d=0;d<7;d++){
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell' + (d===1?' today-col':'');
+      const ev = SCHEDULE_EVENTS.find(e=>e.day===d && e.time===t);
+      if(ev){
+        cell.innerHTML=`<div class="cal-event ce-${ev.type}" onclick="alert('${ev.name}\\n${ev.time} · ${ev.dur} мин')">
+          <div class="ce-name">${ev.name}</div>
+          <div class="ce-time">${ev.time}</div>
+        </div>`;
+      }
+      body.appendChild(cell);
+    }
+  });
+  // upcoming list
+  document.getElementById('upcomingList').innerHTML = SCHEDULE_EVENTS.map(e=>{
+    const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    const dates = [17,18,19,20,21,22,23];
+    return `<div class="upc-item">
+      <div class="upc-date">
+        <div class="ud-d">${dates[e.day]}</div>
+        <div class="ud-m">марта</div>
+      </div>
+      <div class="upc-divider"></div>
+      <div class="upc-info">
+        <div class="upc-name">${e.name}</div>
+        <div class="upc-meta">${dayNames[e.day]} · ${e.time} · ${e.dur} мин</div>
+      </div>
+      <div class="upc-join">
+        <button class="btn ${e.type==='orange'?'btn-blue':'btn-ghost'} btn-sm" 
+          onclick="alert('Открываю занятие: ${e.name}')">
+          ${e.type==='orange'?'🔴 Подключиться':'Открыть'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateWeekLabel() {
+  const base = new Date(2025,2,17);
+  base.setDate(base.getDate()+_weekOff*7);
+  const end = new Date(base);end.setDate(end.getDate()+6);
+  const months=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  document.getElementById('weekLabel').textContent =
+    `${base.getDate()} – ${end.getDate()} ${months[end.getMonth()]} ${end.getFullYear()}`;
+}
+function changeWeek(dir){_weekOff+=dir;renderSchedule()}
+
+/* ══════════════════════════════════════
+   LESSONS
+══════════════════════════════════════ */
+function renderLessons() {
+  // List
+  const course = COURSES[0];
+  document.getElementById('lessonsList').innerHTML = `
+    <div class="ll-course-header">${course.icon} ${course.name}</div>
+    ${LESSONS_DATA.map((l,i)=>`
+      <div class="ll-item ${l.done?'done':''} ${S.activeLesson===i?'active':''}" onclick="selectLesson(${i})">
+        <div class="ll-num">${l.done?'✓':l.num}</div>
+        <span class="ll-name">${l.name}</span>
+        <span class="ll-dur">${l.dur}</span>
+        ${l.done?'<span class="ll-done-icon">✓</span>':''}
+      </div>`).join('')}`;
+
+  renderLessonPlayer(S.activeLesson);
+}
+
+function selectLesson(idx) {
+  S.activeLesson = idx;
+  renderLessons();
+}
+
+function renderLessonPlayer(idx) {
+  const l = LESSONS_DATA[idx];
+  document.getElementById('lessonPlayer').innerHTML = `
+    <div class="lp-video">
+      <div class="lp-video-bg"></div>
+      <div style="position:relative;z-index:1;text-align:center">
+        <div style="font-size:3rem;margin-bottom:1rem;opacity:.3">📐</div>
+        <div class="lp-play-btn" onclick="alert('Видеоплеер: ${l.name}')">
+          <span class="lp-play-icon">▶</span>
+        </div>
+      </div>
+    </div>
+    <div class="lp-progress">
+      <div class="lp-prog-bar" onclick="alert('Переход по видео')">
+        <div class="lp-prog-fill" style="width:${l.done?'100%':'35%'}"></div>
+      </div>
+      <span class="lp-time">${l.done?l.dur:'12:30'} / ${l.dur}</span>
+      <div class="lp-controls">
+        <button class="lp-ctrl-btn" onclick="alert('0.5×')">0.5×</button>
+        <button class="lp-ctrl-btn" onclick="alert('1×')">1×</button>
+        <button class="lp-ctrl-btn" onclick="alert('1.5×')">1.5×</button>
+        <button class="lp-ctrl-btn" onclick="alert('2×')">2×</button>
+      </div>
+    </div>
+    <div class="lesson-body">
+      <h2>Урок ${l.num}: ${l.name}</h2>
+      <p>Практический урок по работе с инструментами AutoCAD. В этом уроке ты освоишь ${l.name.toLowerCase()} и применишь знания в реальном проекте.</p>
+      <div class="lesson-notes">
+        <h4>📝 Конспект урока</h4>
+        <ul>
+          <li>Теоретические основы раздела</li>
+          <li>Основные команды и горячие клавиши</li>
+          <li>Практическое задание к уроку</li>
+          <li>Частые ошибки и как их избежать</li>
+        </ul>
+      </div>
+      <div class="lesson-nav">
+        ${idx>0?`<button class="btn btn-ghost" onclick="selectLesson(${idx-1})">← Предыдущий</button>`:''}
+        <button class="btn btn-blue" style="margin-left:auto" onclick="${idx<LESSONS_DATA.length-1?`selectLesson(${idx+1})`:`alert('Поздравляем! Все уроки пройдены!')`}">
+          ${idx<LESSONS_DATA.length-1?'Следующий урок →':'🎉 Завершить курс'}
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════
+   MATERIALS
+══════════════════════════════════════ */
+let _matFilter = 'all';
+function filterMat(f,btn){
+  _matFilter=f;
+  document.querySelectorAll('.mat-filters .cf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMaterials();
+}
+function renderMaterials(){
+  const filtered = _matFilter==='all'?MATERIALS:MATERIALS.filter(m=>m.type===_matFilter);
+  document.getElementById('matGrid').innerHTML = filtered.map(m=>`
+    <div class="mat-card ${m.featured?'mat-featured':''}">
+      <div class="mat-icon-wrap">${m.icon}</div>
+      <h4>${m.name}</h4>
+      <p>${m.desc}</p>
+      <div class="mat-meta">
+        <span class="mat-size">${m.size}</span>
+        <button class="mat-download" onclick="alert('Скачиваю: ${m.name}')">↓ Скачать</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   CHECKOUT
+══════════════════════════════════════ */
+function initCheckout(courseId) {
+  if(!S.user){openAuth('login','Войди чтобы купить курс');return;}
+  const c = COURSES.find(x=>x.id===courseId);
+  if(c) S.currentCourse=c;
+  goPage('checkout');
+}
+function renderCheckout(){
+  if(!S.user||!S.currentCourse)return;
+  const c=S.currentCourse;
+  document.getElementById('checkoutSubtitle').textContent='Покупка: '+c.name;
+  document.getElementById('coUserInfo').innerHTML=`
+    <div class="flex-center">
+      <div class="avatar" style="width:38px;height:38px;font-size:.9rem">${S.user.name[0]}</div>
+      <div><div style="font-weight:600;font-size:.875rem">${S.user.name}</div><div style="font-size:.78rem;color:var(--ink3)">${S.user.email}</div></div>
+    </div>`;
+  const disc=Math.round(c.price*.1);
+  const tot=c.price-disc;
+  document.getElementById('cosCourse').innerHTML=`
+    <div class="cos-img" style="${c.bg}">${c.icon}</div>
+    <div><div class="cos-name">${c.name}</div><div class="cos-sub">${c.hours} ч · ${c.lessons} уроков</div></div>`;
+  document.getElementById('cosPrice').textContent=c.price.toLocaleString('ru')+' ₸';
+  document.getElementById('cosDiscount').textContent='−'+disc.toLocaleString('ru')+' ₸';
+  document.getElementById('cosTotal').textContent=tot.toLocaleString('ru')+' ₸';
+}
+function selPay(el){
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');el.querySelector('input').checked=true;
+}
+function doPay(){
+  const c=S.currentCourse;
+  if(!c)return;
+  if(!S.purchased.find(x=>x.id===c.id)) S.purchased.push({...c,progress:0});
+  renderCabinet();
+  goPage('success');
+}
+function fmtCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.match(/.{1,4}/g)?.join(' ')||v}
+function fmtExp(el){let v=el.value.replace(/\D/g,'').substring(0,4);if(v.length>=3)v=v.substring(0,2)+'/'+v.substring(2);el.value=v}
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+function openAuth(tab,note=''){
+  document.getElementById('authOverlay').classList.add('open');
+  renderAuth(tab,note);
+}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('open')}
+function renderAuth(tab,note){
+  document.getElementById('authContent').innerHTML=`
+    <h2>Добро пожаловать в Studiup</h2>
+    <div class="modal-sub">${note||'Войди или создай аккаунт'}</div>
+    <div class="modal-tabs">
+      <button class="mt-btn ${tab==='login'?'active':''}" onclick="renderAuth('login')">Войти</button>
+      <button class="mt-btn ${tab==='register'?'active':''}" onclick="renderAuth('register')">Регистрация</button>
+    </div>
+    ${tab==='login'?loginHTML():regHTML()}`;
+}
+function loginHTML(){return`
+  <div class="form-group"><label>Email</label><input class="form-input" id="liEmail" type="email" placeholder="you@email.com"></div>
+  <div class="form-group"><label>Пароль</label><input class="form-input" id="liPass" type="password" placeholder="••••••••"></div>
+  <div class="form-err" id="liErr">Заполни все поля</div>
+  <button class="btn-form" onclick="doLogin()">Войти →</button>
+  <div class="or-divider">или</div>
+  <button class="btn-demo" onclick="demoLogin()">🚀 Демо-вход (без регистрации)</button>`}
+function regHTML(){return`
+  <div class="form-group"><label>Имя</label><input class="form-input" id="riName" placeholder="Твоё имя"></div>
+  <div class="form-group"><label>Email</label><input class="form-input" id="riEmail" type="email" placeholder="you@email.com"></div>
+  <div class="form-group"><label>Пароль</label><input class="form-input" id="riPass" type="password" placeholder="Минимум 6 символов"></div>
+  <div class="form-err" id="riErr">Заполни все поля</div>
+  <button class="btn-form" onclick="doReg()">Создать аккаунт →</button>
+  <div class="or-divider">или</div>
+  <button class="btn-demo" onclick="demoLogin()">🚀 Демо-вход (без регистрации)</button>`}
+function doLogin(){
+  const e=document.getElementById('liEmail').value.trim();
+  const p=document.getElementById('liPass').value;
+  if(!e||!p){document.getElementById('liErr').classList.add('show');return;}
+  doEnter({name:e.split('@')[0],email:e});
+}
+function doReg(){
+  const n=document.getElementById('riName').value.trim();
+  const e=document.getElementById('riEmail').value.trim();
+  const p=document.getElementById('riPass').value;
+  if(!n||!e||p.length<6){document.getElementById('riErr').classList.add('show');return;}
+  doEnter({name:n,email:e});
+}
+function demoLogin(){doEnter({name:'Алмас',email:'almas@studiup.kz'})}
+function doEnter(user){
+  S.user=user;
+  closeAuth();
+  updateNav();
+  document.body.classList.remove('landing');
+  goPage('cabinet');
+}
+function logout(){
+  S.user=null;S.purchased=[];
+  updateNav();
+  document.body.classList.add('landing');
+  goPage('landing');
+}
+function updateNav(){
+  const nr=document.getElementById('navRight');
+  const nc=document.getElementById('navCenter');
+  if(S.user){
+    nr.innerHTML=`<div class="user-chip" onclick="goPage('cabinet')">
+      <div class="user-chip-av">${S.user.name[0]}</div>
+      <span class="user-chip-name">${S.user.name}</span>
+    </div>`;
+    nc.innerHTML=`<div class="nav-search"><input placeholder="Поиск курсов и материалов..."></div>`;
+    document.getElementById('sbCheckout').style.display=S.currentCourse?'flex':'none';
+  }else{
+    nr.innerHTML=`<button class="btn-login" onclick="openAuth('login')">Войти</button>
+      <button class="btn-signup" onclick="openAuth('register')">Начать бесплатно →</button>`;
+    nc.innerHTML='';
+  }
+}
+
+/* ══════════════════════════════════════
+   MISC
+══════════════════════════════════════ */
+document.getElementById('authOverlay').addEventListener('click',function(e){
+  if(e.target===this)closeAuth();
+});
+window.addEventListener('scroll',()=>{
+  document.getElementById('topNav').classList.toggle('scrolled',window.scrollY>40);
+});
+
+// INIT
+renderLandingCourses();
+</script>
+</body>
+</html>
